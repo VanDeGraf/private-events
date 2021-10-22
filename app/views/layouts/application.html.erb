@@ -11,6 +11,29 @@
 </head>
 
 <body>
+<nav>
+  <span>|________________________|</span>
+  <span><%= link_to 'Events', events_path %></span>
+  <span>|________________________|</span>
+  <% if user_signed_in? %>
+    <span><%= link_to 'Create Event', new_event_path %></span>
+    <span>|</span>
+    <span><%= link_to current_user.name, current_user %></span>
+    <span>|</span>
+    <span><%= link_to 'Logout', destroy_user_session_path, method: :delete %></span>
+  <% else %>
+    <span><%= link_to 'Log in', new_user_session_path %></span>
+    <span>|</span>
+    <span><%= link_to 'Sign Up', new_user_registration_path %></span>
+  <% end %>
+</nav>
+<hr>
+<% flash.each do |type, msg| %>
+  <% type = type == 'alert' ? 'warning' : 'success' %>
+  <div class="alert alert-<%= type %>">
+    <%= msg %>
+  </div>
+<% end %>
 <%= yield %>
 </body>
 </html>

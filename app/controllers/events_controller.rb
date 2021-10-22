@@ -1,6 +1,6 @@
 class EventsController < ApplicationController
-  before_action :set_event, only: [:show, :attend]
-  before_action :authenticate_user!, only: [:new, :attend, :create]
+  before_action :set_event, only: [:show, :attend, :edit, :update]
+  before_action :authenticate_user!, only: [:new, :attend, :create, :edit, :update]
 
   # GET /events or /events.json
   def index
@@ -41,6 +41,22 @@ class EventsController < ApplicationController
         flash[:notice] = "Successfully add #{current_user.name} as attendee of #{@event.title} event."
       end
       redirect_to @event
+    end
+  end
+
+  def edit
+    unless current_user.id == @event.creator.id
+      flash[:alert] = "You can't edit not own event!"
+      redirect_to @event
+    end
+  end
+
+  def update
+    if @event.update(event_params)
+      redirect_to @event
+      flash[:notice] = "Event was successfully updated."
+    else
+      render :edit
     end
   end
 

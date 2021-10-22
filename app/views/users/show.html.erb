@@ -1,7 +1,22 @@
-<h2><%= @user.name %>'s created events</h2>
+<h4><%= @user.name %>'s events</h4>
 
+<h5>Created events</h5>
 <ul>
-<% @user.created_events.each do |event| %>
-  <li><%= link_to event.title, event_path(event) %></li>
-<% end %>
+  <% @user.created_events.each do |event| %>
+    <li><%= link_to event.title, event_path(event) %></li>
+  <% end %>
+</ul>
+
+<h5>Attended events</h5>
+<p>Already Attended</p>
+<ul>
+  <% @user.attended_events.where("events.date < ?",Date.today).each do |event| %>
+    <li><%= link_to event.title, event_path(event) %></li>
+  <% end %>
+</ul>
+<p>Not yet Attended</p>
+<ul>
+  <% @user.attended_events.where("events.date >= ?",Date.today).each do |event| %>
+    <li><%= link_to event.title, event_path(event) %></li>
+  <% end %>
 </ul>

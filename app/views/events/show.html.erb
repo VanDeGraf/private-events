@@ -20,5 +20,12 @@
   <%= @event.description %>
 </p>
 
+<h5>Attendees</h5>
+<ul>
+  <% @event.attendees.each do |attendee| %>
+    <li><%= attendee.name %></li>
+  <% end %>
+</ul>
+
 <%= link_to 'Attend', event_path(@event) + "/attend" %>
 

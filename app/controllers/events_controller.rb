@@ -1,5 +1,6 @@
 class EventsController < ApplicationController
-  before_action :set_event, only: %i[ show edit attend ]
+  before_action :set_event, only: [:show, :attend]
+  before_action :authenticate_user!, only: [:new, :attend, :create]
 
   # GET /events or /events.json
   def index

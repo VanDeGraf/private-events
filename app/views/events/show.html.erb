@@ -24,6 +24,7 @@
 <% if user_signed_in? %>
   <% if @event.creator_id == current_user.id %>
     <%= link_to 'Edit', edit_event_path %>
+    <%= link_to 'Destroy', event_path(@event), method: :delete %>
   <% else %>
     <% if @event.attendee_ids.include?(current_user.id) %>
       <%= link_to 'Leave', event_path(@event) + "/leave" %>

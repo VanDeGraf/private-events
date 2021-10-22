@@ -1,6 +1,6 @@
 class EventsController < ApplicationController
-  before_action :set_event, only: [:show, :attend, :edit, :update, :leave]
-  before_action :authenticate_user!, only: [:new, :attend, :create, :edit, :update, :leave]
+  before_action :set_event, except: [:index, :new, :create]
+  before_action :authenticate_user!, except: [:index, :show]
 
   # GET /events or /events.json
   def index
@@ -29,7 +29,7 @@ class EventsController < ApplicationController
   end
 
   def attend
-    if @event.creator_id == current_user.id
+    if event_own?
       flash[:alert] = "Creator(you) can't be attendee on own event!"
     elsif current_user.attended_event_ids.include?(@event.id)
       flash[:alert] = "You already attendee of this event!"
@@ -41,7 +41,7 @@ class EventsController < ApplicationController
   end
 
   def leave
-    if @event.creator_id == current_user.id
+    if event_own?
       flash[:alert] = "As event creator, you can't leave. If you want, you can destroy this event."
     elsif !current_user.attended_event_ids.include?(@event.id)
       flash[:alert] = "You not attendee of this event!"
@@ -53,18 +53,34 @@ class EventsController < ApplicationController
   end
 
   def edit
-    unless current_user.id == @event.creator.id
+    unless event_own?
       flash[:alert] = "You can't edit not own event!"
       redirect_to @event
     end
   end
 
   def update
-    if @event.update(event_params)
-      redirect_to @event
-      flash[:notice] = "Event was successfully updated."
+    if event_own?
+      if @event.update(event_params)
+        redirect_to @event
+        flash[:notice] = "Event was successfully updated."
+      else
+        render :edit
+      end
     else
-      render :edit
+      flash[:alert] = "You can't edit not own event!"
+      redirect_to @event
+    end
+  end
+
+  def destroy
+    if event_own?
+      @event.destroy
+      flash[:notice] = "Event was successfully destroyed."
+      redirect_to events_path
+    else
+      flash[:alert] = "You can't edit not own event!"
+      redirect_to @event
     end
   end
 
@@ -78,5 +94,9 @@ class EventsController < ApplicationController
   # Only allow a list of trusted parameters through.
   def event_params
     params.require(:event).permit(:date, :title, :description)
+  end
+
+  def event_own?
+    @event.creator_id == current_user.id
   end
 end

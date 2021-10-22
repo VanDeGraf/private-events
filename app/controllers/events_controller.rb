@@ -29,19 +29,15 @@ class EventsController < ApplicationController
   end
 
   def attend
-    if @event.nil?
-      redirect_to @event
+    if @event.creator_id == current_user.id
+      flash[:alert] = "Creator(you) can't be attendee on own event!"
+    elsif current_user.attended_event_ids.include?(@event.id)
+      flash[:alert] = "You already attendee of this event!"
     else
-      if @event.creator_id == current_user.id
-        flash[:alert] = "Creator(you) can't be attendee on own event!"
-      elsif current_user.attended_event_ids.include?(@event.id)
-        flash[:alert] = "You already attendee of this event!"
-      else
-        @event.attendees << current_user
-        flash[:notice] = "Successfully add #{current_user.name} as attendee of #{@event.title} event."
-      end
-      redirect_to @event
+      @event.attendees << current_user
+      flash[:notice] = "Successfully add #{current_user.name} as attendee of #{@event.title} event."
     end
+    redirect_to @event
   end
 
   def edit

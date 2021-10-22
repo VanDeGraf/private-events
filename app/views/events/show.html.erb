@@ -25,7 +25,9 @@
   <% if @event.creator_id == current_user.id %>
     <%= link_to 'Edit', edit_event_path %>
   <% else %>
-    <% unless @event.attendee_ids.include?(current_user.id) %>
+    <% if @event.attendee_ids.include?(current_user.id) %>
+      <%= link_to 'Leave', event_path(@event) + "/leave" %>
+    <% else %>
       <%= link_to 'Attend', event_path(@event) + "/attend" %>
     <% end %>
   <% end %>

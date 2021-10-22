@@ -1,6 +1,6 @@
 class EventsController < ApplicationController
-  before_action :set_event, only: [:show, :attend, :edit, :update]
-  before_action :authenticate_user!, only: [:new, :attend, :create, :edit, :update]
+  before_action :set_event, only: [:show, :attend, :edit, :update, :leave]
+  before_action :authenticate_user!, only: [:new, :attend, :create, :edit, :update, :leave]
 
   # GET /events or /events.json
   def index
@@ -36,6 +36,18 @@ class EventsController < ApplicationController
     else
       @event.attendees << current_user
       flash[:notice] = "Successfully add #{current_user.name} as attendee of #{@event.title} event."
+    end
+    redirect_to @event
+  end
+
+  def leave
+    if @event.creator_id == current_user.id
+      flash[:alert] = "As event creator, you can't leave. If you want, you can destroy this event."
+    elsif !current_user.attended_event_ids.include?(@event.id)
+      flash[:alert] = "You not attendee of this event!"
+    else
+      @event.attendees.destroy(current_user)
+      flash[:notice] = "Successfully leave from #{@event.title} event."
     end
     redirect_to @event
   end

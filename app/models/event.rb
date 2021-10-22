@@ -7,4 +7,6 @@ class Event < ApplicationRecord
                           association_foreign_key: :attendee_id,
                           join_table: "attended_events_attendees"
 
+  scope :past, -> { where("date < ?", Date.today) }
+  scope :future, -> { where("date >= ?", Date.today) }
 end

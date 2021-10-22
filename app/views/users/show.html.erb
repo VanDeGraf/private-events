@@ -10,13 +10,13 @@
 <h5>Attended events</h5>
 <p>Already Attended</p>
 <ul>
-  <% @user.attended_events.where("events.date < ?",Date.today).each do |event| %>
+  <% @user.attended_events.past.each do |event| %>
     <li><%= link_to event.title, event_path(event) %></li>
   <% end %>
 </ul>
 <p>Not yet Attended</p>
 <ul>
-  <% @user.attended_events.where("events.date >= ?",Date.today).each do |event| %>
+  <% @user.attended_events.future.each do |event| %>
     <li><%= link_to event.title, event_path(event) %></li>
   <% end %>
 </ul>

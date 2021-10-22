@@ -1,5 +1,5 @@
 class EventsController < ApplicationController
-  before_action :set_event, only: %i[ show edit ]
+  before_action :set_event, only: %i[ show edit attend ]
 
   # GET /events or /events.json
   def index
@@ -19,12 +19,27 @@ class EventsController < ApplicationController
   def create
     @event = current_user.created_events.build(event_params)
 
-    respond_to do |format|
-      if @event.save
-        format.html { redirect_to @event, notice: "Event was successfully created." }
+    if @event.save
+      redirect_to @event
+      flash[:notice] = "Event was successfully created."
+    else
+      render :new
+    end
+  end
+
+  def attend
+    if @event.nil?
+      redirect_to @event
+    else
+      if @event.creator_id == current_user.id
+        flash[:alert] = "Creator(you) can't be attendee on own event!"
+      elsif current_user.attended_event_ids.include?(@event.id)
+        flash[:alert] = "You already attendee of this event!"
       else
-        format.html { render :new, status: :unprocessable_entity }
+        @event.attendees << current_user
+        flash[:notice] = "Successfully add #{current_user.name} as attendee of #{@event.title} event."
       end
+      redirect_to @event
     end
   end
 

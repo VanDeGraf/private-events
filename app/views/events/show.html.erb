@@ -1,4 +1,9 @@
-<p id="notice"><%= notice %></p>
+<% flash.each do |type, msg| %>
+  <% type = type == 'alert' ? 'warning' : 'success' %>
+  <div class="alert alert-<%= type %>">
+    <%= msg %>
+  </div>
+<% end %>
 
 <p>
   <strong>Date:</strong>
@@ -14,4 +19,6 @@
   <strong>Description:</strong>
   <%= @event.description %>
 </p>
+
+<%= link_to 'Attend', event_path(@event) + "/attend" %>
 

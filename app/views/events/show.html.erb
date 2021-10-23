@@ -1,35 +1,30 @@
-<p>
-  <strong>Date:</strong>
-  <%= @event.date %>
-</p>
-
-<p>
-  <strong>Title:</strong>
-  <%= @event.title %>
-</p>
-
-<p>
-  <strong>Description:</strong>
-  <%= @event.description %>
-</p>
-
-<h5>Attendees</h5>
-<ul>
-  <% @event.attendees.each do |attendee| %>
-    <li><%= attendee.name %></li>
-  <% end %>
-</ul>
-
-
-<% if user_signed_in? %>
-  <% if @event.creator_id == current_user.id %>
-    <%= link_to 'Edit', edit_event_path %>
-    <%= link_to 'Destroy', event_path(@event), method: :delete %>
-  <% else %>
-    <% if @event.attendee_ids.include?(current_user.id) %>
-      <%= link_to 'Leave', event_path(@event) + "/leave" %>
-    <% else %>
-      <%= link_to 'Attend', event_path(@event) + "/attend" %>
+<div class="container bg-light shadow-sm rounded py-2">
+  <h3 align="center"><%= @event.title %></h3>
+  <p><%= @event.description %></p>
+  <p>
+    <strong>Creator:</strong> <%= @event.creator.name %><br>
+    <strong>Event Date:</strong> <%= @event.date %>
+  </p>
+  <div class="my-2 justify-content-start align-baseline">
+    <span class="mr-2"><strong>Attendees: </strong></span>
+    <% @event.attendees.each_with_index do |attendee, i| %>
+      <span class="mx-1">
+        <%= attendee.name + (i == @event.attendees.count - 1 ? '' : ',') %>
+      </span>
     <% end %>
+  </div>
+  <% if user_signed_in? %>
+    <div class="btn-group">
+      <% if @event.creator_id == current_user.id %>
+        <%= link_to 'Edit', edit_event_path, class: "btn btn-warning" %>
+        <%= link_to 'Destroy', event_path(@event), method: :delete, class: "btn btn-danger" %>
+      <% else %>
+        <% if @event.attendee_ids.include?(current_user.id) %>
+          <%= link_to 'Leave', event_path(@event) + "/leave", class: "btn btn-warning" %>
+        <% else %>
+          <%= link_to 'Attend', event_path(@event) + "/attend", class: "btn btn-success" %>
+        <% end %>
+      <% end %>
+    </div>
   <% end %>
-<% end %>
+</div>

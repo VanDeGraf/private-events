@@ -11,23 +11,29 @@
 </head>
 
 <body>
-<nav>
-  <span>|________________________|</span>
-  <span><%= link_to 'Events', events_path %></span>
-  <span>|________________________|</span>
-  <% if user_signed_in? %>
-    <span><%= link_to 'Create Event', new_event_path %></span>
-    <span>|</span>
-    <span><%= link_to current_user.name, current_user %></span>
-    <span>|</span>
-    <span><%= link_to 'Logout', destroy_user_session_path, method: :delete %></span>
-  <% else %>
-    <span><%= link_to 'Log in', new_user_session_path %></span>
-    <span>|</span>
-    <span><%= link_to 'Sign Up', new_user_registration_path %></span>
-  <% end %>
+<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm mb-3">
+  <div class="container-fluid">
+    <%= link_to 'Private Events', root_path, class: "navbar-brand" %>
+    <div class="collapse navbar-collapse">
+      <ul class="navbar-nav mr-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <%= link_to 'Events', events_path, class: "nav-link" %>
+        </li>
+      </ul>
+    </div>
+    <div class="d-flex">
+      <% if user_signed_in? %>
+        <%= link_to 'Create Event', new_event_path, class: 'btn btn-outline-primary' %>
+        <%= link_to current_user.name, current_user, class: 'mx-3 btn btn-outline-primary' %>
+        <%= link_to 'Log Out', destroy_user_session_path, class: 'btn btn-outline-danger', method: :delete %>
+      <% else %>
+        <%= link_to 'Log In', new_user_session_path, class: 'mx-3 btn btn-outline-success' %>
+        <%= link_to 'Sign Up', new_user_registration_path, class: 'btn btn-outline-success' %>
+      <% end %>
+
+    </div>
+  </div>
 </nav>
-<hr>
 <% flash.each do |type, msg| %>
   <% type = type == 'alert' ? 'warning' : 'success' %>
   <div class="alert alert-<%= type %>">
